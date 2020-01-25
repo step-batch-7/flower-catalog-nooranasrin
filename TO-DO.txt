@@ -1,4 +1,4 @@
-❌ Set the environment to start
+✅ Set the environment to start
     -> public
         -> js
         -> css
