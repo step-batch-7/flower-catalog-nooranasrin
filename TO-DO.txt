@@ -10,7 +10,7 @@
 
 ❌ Create All the static pages
     ✅ Create home page
-    -> Create page form Abeliophyllum
+    ✅ Create page form Abeliophyllum
     -> Create page for Ageratum
     -> Create page for guest book
 

@@ -17,3 +17,22 @@ body {
 #homePageLinks {
   margin: auto;
 }
+
+.flowerPageHeading {
+  display: flex;
+  border-bottom: 1.5px solid gray;
+  margin-top: -50px;
+  margin-bottom: 20px;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.flowerPageContent {
+  margin: auto;
+  margin-left: 20px;
+}
+
+.flower-image {
+  width: 500px;
+  height: auto;
+}
