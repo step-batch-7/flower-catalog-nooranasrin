@@ -17,3 +17,5 @@
 ❌ Create a server to host the flower catalog 
 
 ❌ The server should store the guest book information 
+
+❌ The guest book informations should show in the guest book page
