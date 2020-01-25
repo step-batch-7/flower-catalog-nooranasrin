@@ -36,3 +36,9 @@ body {
   width: 500px;
   height: auto;
 }
+
+#submit {
+  width: 10em;
+  background-color: rgb(202, 198, 198);
+  border-radius: 4px;
+}
