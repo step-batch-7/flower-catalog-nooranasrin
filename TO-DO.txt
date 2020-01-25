@@ -1,0 +1,19 @@
+❌ Set the environment to start
+    -> public
+        -> js
+        -> css
+        -> images
+        -> index.html
+    -> templates
+    -> lib
+    -> server.js
+
+❌ Create All the static pages
+    -> Create home page
+    -> Create page form Abeliophyllum
+    -> Create page for Ageratum
+    -> Create page for guest book
+
+❌ Create a server to host the flower catalog 
+
+❌ The server should store the guest book information 
