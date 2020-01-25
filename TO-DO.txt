@@ -1,12 +1,12 @@
 ✅ Set the environment to start
-    -> public
-        -> js
-        -> css
-        -> images
-        -> index.html
-    -> templates
-    -> lib
-    -> server.js
+    ✅ public
+        ✅ js
+        ✅ css
+        ✅ images
+        ✅ index.html
+    ✅ templates
+    ✅ lib
+    ✅ server.js
 
 ❌ Create All the static pages
     -> Create home page
