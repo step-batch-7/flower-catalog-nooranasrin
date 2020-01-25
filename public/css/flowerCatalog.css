@@ -1,0 +1,19 @@
+body {
+  margin: 100px;
+}
+
+.subHeading {
+  color: rgb(230, 181, 23);
+  border-bottom: 1.5px solid gray;
+  text-align: right;
+  padding-bottom: 20px;
+  padding-right: 150px;
+}
+
+.pageBody {
+  display: flex;
+}
+
+#homePageLinks {
+  margin: auto;
+}
