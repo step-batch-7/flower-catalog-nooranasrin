@@ -27,12 +27,23 @@ const serveFile = req => {
   return provideResponse(path, 200, content);
 };
 
-const findHandler = req => {
-  if (req.method === 'GET' && req.url === '/') {
-    req.url = '/index.html';
+const storeUserFeedBack = function(request) {
+  const dataStoragePath = `${__dirname}/feedback.json`;
+  const feedback = require(dataStoragePath);
+  const newFeedBack = request.body;
+  feedback.push(newFeedBack);
+  fs.writeFileSync(dataStoragePath, JSON.stringify(feedback, null, 2));
+};
+
+const findHandler = request => {
+  if (request.method === 'GET' && request.url === '/') {
+    request.url = '/index.html';
     return serveFile;
   }
-  if (req.method === 'GET') return serveFile;
+  if (request.method === 'GET') return serveFile;
+  if (request.method === 'POST') {
+    storeUserFeedBack(request);
+  }
   return () => new Response();
 };
 
