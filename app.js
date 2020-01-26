@@ -47,14 +47,17 @@ const generateFeedbackDetails = function(body) {
   return newFeedBack;
 };
 
-const serveGuestBookPage = function(request) {
+const handleUserFeedback = function(method, body) {
   const dataStoragePath = `${__dirname}/feedback.json`;
   let feedback = require(dataStoragePath);
-  if (request.method === 'POST')
-    feedback.push(generateFeedbackDetails(request.body));
+  if (method === 'POST') feedback.push(generateFeedbackDetails(body));
   feedback = JSON.stringify(feedback, null, 2);
   fs.writeFileSync(dataStoragePath, feedback);
-  const tableHtml = createTable(JSON.parse(feedback));
+  return createTable(JSON.parse(feedback));
+};
+
+const serveGuestBookPage = function(request) {
+  const tableHtml = handleUserFeedback(request.method, request.body);
   let html = fs.readFileSync(`${__dirname}/public/guestBook.html`, 'utf8');
   html = html.replace('__FEEDBACK__', tableHtml);
   return provideResponse(200, html, 'text/html');
@@ -66,7 +69,6 @@ const findHandler = request => {
     return serveFile;
   }
   if (request.url === '/guestBook.html') return serveGuestBookPage;
-
   if (request.method === 'GET') return serveFile;
   return () => new Response();
 };
