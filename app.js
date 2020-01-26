@@ -5,9 +5,7 @@ const { loadTemplate } = require('./lib/loadTemplate');
 
 const STATIC_FOLDER = `${__dirname}/public`;
 
-const provideResponse = function(path, statusCode, content) {
-  const [, extension] = path.match(/.*\.(.*)$/) || [];
-  const contentType = CONTENT_TYPES[extension];
+const provideResponse = function(statusCode, content, contentType) {
   const response = new Response();
   response.setHeader('Content-Type', contentType);
   response.setHeader('Content-Length', content.length);
@@ -21,28 +19,45 @@ const serveFile = req => {
   const stat = fs.existsSync(path) && fs.statSync(path);
   if (!stat || !stat.isFile()) {
     const content = loadTemplate('error.html', { URL: req.url });
-    return provideResponse('error.html', 404, content);
+    return provideResponse(404, content, 'text/html');
   }
+  const [, extension] = path.match(/.*\.(.*)$/) || [];
+  const contentType = CONTENT_TYPES[extension];
   const content = fs.readFileSync(path);
-  return provideResponse(path, 200, content);
+  return provideResponse(200, content, contentType);
+};
+
+const createTable = function(feedbacks) {
+  let table = '';
+  feedbacks.forEach(feedback => {
+    table += '<tr>';
+    table += `<td> ${feedback.date} </td>`;
+    table += `<td> ${feedback.time} </td>`;
+    table += `<td> ${feedback.name.split('+').join(' ')} </td>`;
+    table += `<td> ${feedback.comment.split('+').join(' ')} </td>`;
+    table += '</tr>';
+  });
+  return table;
 };
 
 const generateFeedbackDetails = function(body) {
-  const date = new Date();
   const newFeedBack = body;
-  newFeedBack.date = `${date.getFullYear()}:${date.getMonth()}:${date.getDay()}`;
-  newFeedBack.time = `${date.getTime()}`;
+  newFeedBack.date = new Date().toDateString();
+  newFeedBack.time = new Date().toLocaleTimeString();
   return newFeedBack;
 };
 
-const storeUserFeedBack = function(request) {
+const serveGuestBookPage = function(request) {
   const dataStoragePath = `${__dirname}/feedback.json`;
   let feedback = require(dataStoragePath);
-  feedback.push(generateFeedbackDetails(request.body));
+  if (request.method === 'POST')
+    feedback.push(generateFeedbackDetails(request.body));
   feedback = JSON.stringify(feedback, null, 2);
   fs.writeFileSync(dataStoragePath, feedback);
-  const dataToStore = `const feedbacks=${feedback}`;
-  fs.writeFileSync(`${__dirname}/public/js/feedback.js`, dataToStore);
+  const tableHtml = createTable(JSON.parse(feedback));
+  let html = fs.readFileSync(`${__dirname}/public/guestBook.html`, 'utf8');
+  html = html.replace('__FEEDBACK__', tableHtml);
+  return provideResponse(200, html, 'text/html');
 };
 
 const findHandler = request => {
@@ -50,10 +65,9 @@ const findHandler = request => {
     request.url = '/index.html';
     return serveFile;
   }
+  if (request.url === '/guestBook.html') return serveGuestBookPage;
+
   if (request.method === 'GET') return serveFile;
-  if (request.method === 'POST') {
-    storeUserFeedBack(request);
-  }
   return () => new Response();
 };
 

@@ -5,10 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Guest Book</title>
     <link rel="stylesheet" href="./css/flowerCatalog.css" />
-    <script src="./js/feedback.js"></script>
-    <script src="./js/flowerCatalog.js"></script>
   </head>
-  <body onload="showUserFeedback()">
+  <body>
     <div class="flowerPageHeading">
       <span class="subHeading" style="border-bottom: none;">
         <a href="./index.html">&lt;&lt;</a>Guest Book</span
@@ -17,8 +15,7 @@
 
     <h2>Leave A Comment</h2>
     <br />
-    <iframe name="hiddenFrame" class="hide"></iframe>
-    <form method="POST" target="hiddenFrame">
+    <form method="POST" action="guestBook.html">
       <table>
         <tr>
           <td><label for="name">Name : </label></td>
@@ -35,13 +32,14 @@
     <br /><br />
     <hr />
 
-    <table cellspacing="30px" id="feedback">
+    <table cellspacing="30px" id="feedback" onsubmit="showUserFeedback()">
       <tr>
         <th>DATE</th>
         <th>TIME</th>
         <th>NAME</th>
         <th>COMMEND_LIST</th>
       </tr>
+      __FEEDBACK__
     </table>
   </body>
 </html>
