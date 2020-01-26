@@ -27,14 +27,21 @@ const serveFile = req => {
   return provideResponse(path, 200, content);
 };
 
+const generateFeedbackDetails = function(body) {
+  const date = new Date();
+  const newFeedBack = body;
+  newFeedBack.date = `${date.getFullYear()}:${date.getMonth()}:${date.getDay()}`;
+  newFeedBack.time = `${date.getTime()}`;
+  return newFeedBack;
+};
+
 const storeUserFeedBack = function(request) {
   const dataStoragePath = `${__dirname}/feedback.json`;
   let feedback = require(dataStoragePath);
-  const newFeedBack = request.body;
-  feedback.push(newFeedBack);
+  feedback.push(generateFeedbackDetails(request.body));
   feedback = JSON.stringify(feedback, null, 2);
   fs.writeFileSync(dataStoragePath, feedback);
-  const dataToStore = `const feedback=${feedback}`;
+  const dataToStore = `const feedbacks=${feedback}`;
   fs.writeFileSync(`${__dirname}/public/js/feedback.js`, dataToStore);
 };
 
