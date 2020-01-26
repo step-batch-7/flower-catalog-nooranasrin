@@ -42,3 +42,11 @@ body {
   background-color: rgb(202, 198, 198);
   border-radius: 4px;
 }
+
+.hide {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 1px;
+  height: 1px;
+}
