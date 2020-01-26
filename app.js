@@ -28,13 +28,14 @@ const serveFile = req => {
 };
 
 const storeUserFeedBack = function(request) {
-  const dataStoragePath = `${__dirname}/feedback.js`;
+  const dataStoragePath = `${__dirname}/feedback.json`;
   let feedback = require(dataStoragePath);
   const newFeedBack = request.body;
   feedback.push(newFeedBack);
-  feedback = JSON.stringify(feedback);
-  const dataToWrite = `const feedback = ${feedback}\n\nmodule.exports = feedback;`;
-  fs.writeFileSync(dataStoragePath, dataToWrite);
+  feedback = JSON.stringify(feedback, null, 2);
+  fs.writeFileSync(dataStoragePath, feedback);
+  const dataToStore = `const feedback=${feedback}`;
+  fs.writeFileSync(`${__dirname}/public/js/feedback.js`, dataToStore);
 };
 
 const findHandler = request => {
