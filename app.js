@@ -80,7 +80,7 @@ const handleUserFeedback = function(method, body) {
 
 const serveGuestBookPage = function(request) {
   const tableHtml = handleUserFeedback(request.method, request.body);
-  let html = fs.readFileSync(`${__dirname}/public/guestBook.html`, 'utf8');
+  let html = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
   html = html.replace('__FEEDBACK__', tableHtml);
   return provideResponse(200, html, 'text/html');
 };
