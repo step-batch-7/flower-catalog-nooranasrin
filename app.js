@@ -66,8 +66,7 @@ const loadPreviousFeedbacks = function() {
 
 const storeTheFeedbacks = function(feedbacks) {
   const dataStoragePath = `${__dirname}/feedback.json`;
-  feedbacks = JSON.stringify(feedbacks, null, 2);
-  fs.writeFileSync(dataStoragePath, feedbacks);
+  fs.writeFileSync(dataStoragePath, JSON.stringify(feedbacks));
 };
 
 const handleUserFeedback = function(method, body) {

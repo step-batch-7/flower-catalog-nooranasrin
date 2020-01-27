@@ -1,0 +1,23 @@
+{
+  "name": "flower-catalog-nooranasrin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/step-batch-7/flower-catalog-nooranasrin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/step-batch-7/flower-catalog-nooranasrin/issues"
+  },
+  "homepage": "https://github.com/step-batch-7/flower-catalog-nooranasrin#readme"
+}
