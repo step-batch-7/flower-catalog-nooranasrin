@@ -38,14 +38,18 @@ const serveFile = req => {
   return provideResponse(200, content, contentType);
 };
 
+const formatData = function(data) {
+  return data.replace(/\+/g, ' ');
+};
+
 const createTable = function(feedbacks) {
   let table = '';
   feedbacks.forEach(feedback => {
     table += '<tr>';
     table += `<td> ${feedback.date} </td>`;
     table += `<td> ${feedback.time} </td>`;
-    table += `<td> ${feedback.name.replace('+', ' ')} </td>`;
-    table += `<td> ${feedback.comment.replace('+', ' ')} </td>`;
+    table += `<td> ${formatData(feedback.name)} </td>`;
+    table += `<td> ${formatData(feedback.comment)} </td>`;
     table += '</tr>';
   });
   return table;
@@ -60,6 +64,7 @@ const generateFeedbackDetails = function(body) {
 
 const loadPreviousFeedbacks = function() {
   const dataStoragePath = `${__dirname}/feedback.json`;
+  if (!fs.existsSync(dataStoragePath)) return [];
   const feedback = require(dataStoragePath);
   return feedback;
 };
