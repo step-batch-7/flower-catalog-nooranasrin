@@ -51,6 +51,7 @@ const handleUserFeedback = function(method, body) {
   const dataStoragePath = `${__dirname}/feedback.json`;
   let feedback = require(dataStoragePath);
   if (method === 'POST') feedback.push(generateFeedbackDetails(body));
+  feedback = feedback.reverse();
   feedback = JSON.stringify(feedback, null, 2);
   fs.writeFileSync(dataStoragePath, feedback);
   return createTable(JSON.parse(feedback));
