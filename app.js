@@ -22,8 +22,13 @@ const isFileNotAvailable = function(path) {
   return !stat || !stat.isFile();
 };
 
+const getPath = function(path) {
+  if (path === '/') return `${STATIC_FOLDER}/index.html`;
+  return `${STATIC_FOLDER}${path}`;
+};
+
 const serveFile = req => {
-  const path = `${STATIC_FOLDER}${req.url}`;
+  const path = getPath(req.url);
   if (isFileNotAvailable(path)) {
     const content = loadTemplate('error.html', { URL: req.url });
     return provideResponse(404, content, 'text/html');
@@ -81,10 +86,6 @@ const serveGuestBookPage = function(request) {
 };
 
 const findHandler = request => {
-  if (request.method === 'GET' && request.url === '/') {
-    request.url = '/index.html';
-    return serveFile;
-  }
   if (request.url === '/guestBook.html') return serveGuestBookPage;
   if (request.method === 'GET') return serveFile;
   return () => new Response();
