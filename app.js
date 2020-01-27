@@ -17,10 +17,14 @@ const provideResponse = function(statusCode, content, contentType) {
   return response;
 };
 
+const isFileNotAvailable = function(path) {
+  const stat = fs.existsSync(path) && fs.statSync(path);
+  return !stat || !stat.isFile();
+};
+
 const serveFile = req => {
   const path = `${STATIC_FOLDER}${req.url}`;
-  const stat = fs.existsSync(path) && fs.statSync(path);
-  if (!stat || !stat.isFile()) {
+  if (isFileNotAvailable(path)) {
     const content = loadTemplate('error.html', { URL: req.url });
     return provideResponse(404, content, 'text/html');
   }
