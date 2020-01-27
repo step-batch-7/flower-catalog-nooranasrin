@@ -39,6 +39,7 @@ const serveFile = req => {
 };
 
 const formatData = function(data) {
+  console.log(data);
   return data.replace(/\r\n/g, '<br>');
 };
 
