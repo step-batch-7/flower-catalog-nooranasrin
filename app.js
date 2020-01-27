@@ -43,12 +43,19 @@ const formatData = function(data) {
   return data.replace(/\r\n/g, '<br>');
 };
 
+const getDateAndTime = function(date) {
+  const dateObject = new Date(date);
+  const day = dateObject.toDateString();
+  const time = dateObject.toLocaleTimeString();
+  return { day, time };
+};
+
 const createTable = function(feedbacks) {
   let table = '';
   feedbacks.forEach(feedback => {
     table += '<tr>';
-    table += `<td> ${feedback.date} </td>`;
-    table += `<td> ${feedback.time} </td>`;
+    table += `<td> ${getDateAndTime(feedback.date).day} </td>`;
+    table += `<td> ${getDateAndTime(feedback.date).time} </td>`;
     table += `<td> ${formatData(feedback.name)} </td>`;
     table += `<td> ${formatData(feedback.comment)} </td>`;
     table += '</tr>';
@@ -58,8 +65,7 @@ const createTable = function(feedbacks) {
 
 const generateFeedbackDetails = function(body) {
   const newFeedBack = body;
-  newFeedBack.date = new Date().toDateString();
-  newFeedBack.time = new Date().toLocaleTimeString();
+  newFeedBack.date = new Date();
   return newFeedBack;
 };
 
