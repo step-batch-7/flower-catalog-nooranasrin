@@ -5,12 +5,15 @@ const { loadTemplate } = require('./lib/loadTemplate');
 
 const STATIC_FOLDER = `${__dirname}/public`;
 
+const getContentType = function(path) {
+  const [, extension] = path.match(/.*\.(.*)$/) || [];
+  return CONTENT_TYPES[extension];
+};
+
 const provideResponse = function(statusCode, content, contentType) {
-  const response = new Response();
+  const response = new Response(statusCode, content);
   response.setHeader('Content-Type', contentType);
   response.setHeader('Content-Length', content.length);
-  response.statusCode = statusCode;
-  response.body = content;
   return response;
 };
 
@@ -21,8 +24,7 @@ const serveFile = req => {
     const content = loadTemplate('error.html', { URL: req.url });
     return provideResponse(404, content, 'text/html');
   }
-  const [, extension] = path.match(/.*\.(.*)$/) || [];
-  const contentType = CONTENT_TYPES[extension];
+  const contentType = getContentType(path);
   const content = fs.readFileSync(path);
   return provideResponse(200, content, contentType);
 };
@@ -47,14 +49,24 @@ const generateFeedbackDetails = function(body) {
   return newFeedBack;
 };
 
-const handleUserFeedback = function(method, body) {
+const loadPreviousFeedbacks = function() {
   const dataStoragePath = `${__dirname}/feedback.json`;
-  let feedback = require(dataStoragePath);
-  if (method === 'POST') feedback.push(generateFeedbackDetails(body));
-  feedback = feedback.reverse();
-  feedback = JSON.stringify(feedback, null, 2);
-  fs.writeFileSync(dataStoragePath, feedback);
-  return createTable(JSON.parse(feedback));
+  const feedback = require(dataStoragePath);
+  return feedback;
+};
+
+const storeTheFeedbacks = function(feedbacks) {
+  const dataStoragePath = `${__dirname}/feedback.json`;
+  feedbacks = JSON.stringify(feedbacks, null, 2);
+  fs.writeFileSync(dataStoragePath, feedbacks);
+};
+
+const handleUserFeedback = function(method, body) {
+  let feedbacks = loadPreviousFeedbacks();
+  if (method === 'POST') feedbacks.push(generateFeedbackDetails(body));
+  feedbacks = feedbacks.reverse();
+  storeTheFeedbacks(feedbacks);
+  return createTable(feedbacks);
 };
 
 const serveGuestBookPage = function(request) {
