@@ -44,8 +44,8 @@ const createTable = function(feedbacks) {
     table += '<tr>';
     table += `<td> ${feedback.date} </td>`;
     table += `<td> ${feedback.time} </td>`;
-    table += `<td> ${feedback.name.split('+').join(' ')} </td>`;
-    table += `<td> ${feedback.comment.split('+').join(' ')} </td>`;
+    table += `<td> ${feedback.name.replace('+', ' ')} </td>`;
+    table += `<td> ${feedback.comment.replace('+', ' ')} </td>`;
     table += '</tr>';
   });
   return table;
