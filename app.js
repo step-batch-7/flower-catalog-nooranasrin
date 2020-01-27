@@ -39,7 +39,8 @@ const serveFile = req => {
 };
 
 const formatData = function(data) {
-  return data.replace(/\+/g, ' ');
+  const text = data.replace(/\+/g, ' ');
+  return text.replace(/%0D%0A/g, '<br>');
 };
 
 const createTable = function(feedbacks) {
