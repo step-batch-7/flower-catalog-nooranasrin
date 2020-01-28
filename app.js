@@ -1,5 +1,5 @@
 const fs = require('fs');
-const Response = require('./lib/response');
+const url = require('url');
 const CONTENT_TYPES = require('./lib/mimeTypes');
 const { loadTemplate } = require('./lib/loadTemplate');
 
@@ -10,11 +10,10 @@ const getContentType = function(path) {
   return CONTENT_TYPES[extension];
 };
 
-const provideResponse = function(statusCode, content, contentType) {
-  const response = new Response(statusCode, content);
+const sendResponse = function(statusCode, content, contentType, response) {
   response.setHeader('Content-Type', contentType);
-  response.setHeader('Content-Length', content.length);
-  return response;
+  response.writeHead(statusCode);
+  response.end(content);
 };
 
 const isFileNotAvailable = function(path) {
@@ -27,19 +26,18 @@ const getPath = function(path) {
   return `${STATIC_FOLDER}${path}`;
 };
 
-const serveFile = req => {
-  const path = getPath(req.url);
+const serveFile = function(request, response) {
+  const path = getPath(request.url);
   if (isFileNotAvailable(path)) {
-    const content = loadTemplate('error.html', { URL: req.url });
-    return provideResponse(404, content, 'text/html');
+    const content = loadTemplate('error.html', { URL: request.url });
+    sendResponse(404, content, 'text/html', response);
   }
   const contentType = getContentType(path);
   const content = fs.readFileSync(path);
-  return provideResponse(200, content, contentType);
+  sendResponse(200, content, contentType, response);
 };
 
 const formatData = function(data) {
-  console.log(data);
   return data.replace(/\r\n/g, '<br>');
 };
 
@@ -64,7 +62,8 @@ const createTable = function(feedbacks) {
 };
 
 const generateFeedbackDetails = function(body) {
-  const newFeedBack = body;
+  const { name, comment } = url.parse(`?${body}`, true).query;
+  const newFeedBack = { name, comment };
   newFeedBack.date = new Date();
   return newFeedBack;
 };
@@ -89,11 +88,15 @@ const handleUserFeedback = function(method, body) {
   return createTable(feedbacks);
 };
 
-const serveGuestBookPage = function(request) {
-  const tableHtml = handleUserFeedback(request.method, request.body);
-  let html = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
-  html = html.replace('__FEEDBACK__', tableHtml);
-  return provideResponse(200, html, 'text/html');
+const serveGuestBookPage = function(request, response) {
+  let userFeedbackDetails = '';
+  request.on('data', chunk => (userFeedbackDetails += chunk));
+  request.on('end', () => {
+    const tableHtml = handleUserFeedback(request.method, userFeedbackDetails);
+    let html = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
+    html = html.replace('__FEEDBACK__', tableHtml);
+    sendResponse(200, html, 'text/html', response);
+  });
 };
 
 const findHandler = request => {
@@ -102,9 +105,9 @@ const findHandler = request => {
   return () => new Response();
 };
 
-const processRequest = req => {
-  const handler = findHandler(req);
-  return handler(req);
+const processRequest = function(request, response) {
+  const handler = findHandler(request, response);
+  return handler(request, response);
 };
 
 module.exports = { processRequest };
