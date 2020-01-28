@@ -10,12 +10,6 @@ const getContentType = function(path) {
   return CONTENT_TYPES[extension];
 };
 
-const sendResponse = function(statusCode, content, contentType, response) {
-  response.setHeader('Content-Type', contentType);
-  response.writeHead(statusCode);
-  response.end(content);
-};
-
 const isFileNotAvailable = function(path) {
   const stat = fs.existsSync(path) && fs.statSync(path);
   return !stat || !stat.isFile();
@@ -26,15 +20,15 @@ const getPath = function(path) {
   return `${STATIC_FOLDER}${path}`;
 };
 
-const serveFile = function(request, response) {
+const serveFile = function(request) {
   const path = getPath(request.url);
   if (isFileNotAvailable(path)) {
-    const content = loadTemplate('error.html', { URL: request.url });
-    sendResponse(404, content, 'text/html', response);
+    const body = loadTemplate('error.html', { URL: request.url });
+    return { statusCode: 404, body, contentType: 'text/html' };
   }
   const contentType = getContentType(path);
-  const content = fs.readFileSync(path);
-  sendResponse(200, content, contentType, response);
+  const body = fs.readFileSync(path);
+  return { statusCode: 200, body, contentType };
 };
 
 const formatData = function(data) {
@@ -47,19 +41,6 @@ const getDateAndTime = function(date) {
   const time = dateObject.toLocaleTimeString();
   return { day, time };
 };
-
-// const createTable = function(feedbacks) {
-//   let table = '';
-//   feedbacks.forEach(feedback => {
-//     table += '<tr>';
-//     table += `<td> ${getDateAndTime(feedback.date).day} </td>`;
-//     table += `<td> ${getDateAndTime(feedback.date).time} </td>`;
-//     table += `<td> ${formatData(feedback.name)} </td>`;
-//     table += `<td> ${formatData(feedback.comment)} </td>`;
-//     table += '</tr>';
-//   });
-//   return table;
-// };
 
 const createTable = function(feedbacks) {
   let div = '';
@@ -95,30 +76,25 @@ const storeTheFeedbacks = function(feedbacks) {
 
 const handleUserFeedback = function(method, body) {
   let feedbacks = loadPreviousFeedbacks();
-  if (method === 'POST') feedbacks.push(generateFeedbackDetails(body));
-  feedbacks = feedbacks.reverse();
+  if (method === 'POST') feedbacks.unshift(generateFeedbackDetails(body));
   storeTheFeedbacks(feedbacks);
   return createTable(feedbacks);
 };
 
-const serveGuestBook = function(request, response) {
-  let userFeedbackDetails = '';
-  request.on('data', chunk => (userFeedbackDetails += chunk));
-  request.on('end', () => {
-    const tableHtml = handleUserFeedback(request.method, userFeedbackDetails);
-    let html = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
-    html = html.replace('__FEEDBACK__', tableHtml);
-    sendResponse(200, html, 'text/html', response);
-  });
+const serveGuestBook = function(request, comment) {
+  const tableHtml = handleUserFeedback(request.method, comment);
+  let body = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
+  body = body.replace('__FEEDBACK__', tableHtml);
+  return { statusCode: 200, body, contentType: 'text/html' };
 };
 
-const processRequest = function(request, response) {
+const processRequest = function(request, comment) {
   const getHandlers = { '/guestBook.html': serveGuestBook, default: serveFile };
   const postHandlers = { '/guestBook.html': serveGuestBook };
   const methods = { GET: getHandlers, POST: postHandlers };
   const handlers = methods[request.method] || methods.NOT_ALLOWED;
   const handler = handlers[request.url] || handlers.default;
-  return handler(request, response);
+  return handler(request, comment);
 };
 
 module.exports = { processRequest };
