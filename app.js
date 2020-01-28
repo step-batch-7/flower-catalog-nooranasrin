@@ -48,17 +48,30 @@ const getDateAndTime = function(date) {
   return { day, time };
 };
 
+// const createTable = function(feedbacks) {
+//   let table = '';
+//   feedbacks.forEach(feedback => {
+//     table += '<tr>';
+//     table += `<td> ${getDateAndTime(feedback.date).day} </td>`;
+//     table += `<td> ${getDateAndTime(feedback.date).time} </td>`;
+//     table += `<td> ${formatData(feedback.name)} </td>`;
+//     table += `<td> ${formatData(feedback.comment)} </td>`;
+//     table += '</tr>';
+//   });
+//   return table;
+// };
+
 const createTable = function(feedbacks) {
-  let table = '';
+  let div = '';
   feedbacks.forEach(feedback => {
-    table += '<tr>';
-    table += `<td> ${getDateAndTime(feedback.date).day} </td>`;
-    table += `<td> ${getDateAndTime(feedback.date).time} </td>`;
-    table += `<td> ${formatData(feedback.name)} </td>`;
-    table += `<td> ${formatData(feedback.comment)} </td>`;
-    table += '</tr>';
+    div += '<div class="feedback">';
+    div += `<div><b>Date: </b>${getDateAndTime(feedback.date).day} </div>`;
+    div += `<div><b>Time: </b>${getDateAndTime(feedback.date).time} </div>`;
+    div += `<div><b>Name: </b>${formatData(feedback.name)} </div>`;
+    div += `<div><b>Comment: </b>${formatData(feedback.comment)} </div>`;
+    div += '</div>';
   });
-  return table;
+  return div;
 };
 
 const generateFeedbackDetails = function(body) {

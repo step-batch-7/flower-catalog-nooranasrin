@@ -50,3 +50,13 @@ body {
   width: 1px;
   height: 1px;
 }
+
+.feedback {
+  background-color: rgb(209, 205, 199);
+  margin-top: 20px;
+  margin-right: 75%;
+  padding-left: 15px;
+  border-radius: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
