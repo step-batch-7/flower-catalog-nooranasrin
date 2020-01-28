@@ -88,7 +88,7 @@ const handleUserFeedback = function(method, body) {
   return createTable(feedbacks);
 };
 
-const serveGuestBookPage = function(request, response) {
+const serveGuestBook = function(request, response) {
   let userFeedbackDetails = '';
   request.on('data', chunk => (userFeedbackDetails += chunk));
   request.on('end', () => {
@@ -99,14 +99,12 @@ const serveGuestBookPage = function(request, response) {
   });
 };
 
-const findHandler = request => {
-  if (request.url === '/guestBook.html') return serveGuestBookPage;
-  if (request.method === 'GET') return serveFile;
-  return () => new Response();
-};
-
 const processRequest = function(request, response) {
-  const handler = findHandler(request, response);
+  const getHandlers = { '/guestBook.html': serveGuestBook, default: serveFile };
+  const postHandlers = { '/guestBook.html': serveGuestBook };
+  const methods = { GET: getHandlers, POST: postHandlers };
+  const handlers = methods[request.method] || methods.NOT_ALLOWED;
+  const handler = handlers[request.url] || handlers.default;
   return handler(request, response);
 };
 
