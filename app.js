@@ -69,28 +69,25 @@ const loadPreviousFeedbacks = function() {
   return comments;
 };
 
-const storeTheFeedbacks = function(feedbacks) {
-  const dataStoragePath = `${__dirname}/comments.json`;
-  fs.writeFileSync(dataStoragePath, JSON.stringify(feedbacks));
-};
-
-const handleUserComment = function(method, body) {
+const serveGuestBook = function(request) {
   let comments = loadPreviousFeedbacks();
-  if (method === 'POST') comments.unshift(formatComment(body));
-  storeTheFeedbacks(comments);
-  return createTable(comments);
-};
-
-const serveGuestBook = function(request, comment) {
-  const tableHtml = handleUserComment(request.method, comment);
+  const tableHtml = createTable(comments);
   let body = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
   body = body.replace('__FEEDBACK__', tableHtml);
   return { statusCode: 200, body, contentType: 'text/html' };
 };
 
+const saveComments = function(request, comments) {
+  let totalComments = loadPreviousFeedbacks();
+  totalComments.unshift(formatComment(comments));
+  const dataStoragePath = `${__dirname}/comments.json`;
+  fs.writeFileSync(dataStoragePath, JSON.stringify(totalComments));
+  return serveGuestBook(request);
+};
+
 const processRequest = function(request, comment) {
   const getHandlers = { '/guestBook.html': serveGuestBook, default: serveFile };
-  const postHandlers = { '/guestBook.html': serveGuestBook };
+  const postHandlers = { '/guestBook.html': saveComments };
   const methods = { GET: getHandlers, POST: postHandlers };
   const handlers = methods[request.method] || methods.NOT_ALLOWED;
   const handler = handlers[request.url] || handlers.default;
