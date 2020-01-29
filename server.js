@@ -1,10 +1,20 @@
 const http = require('http');
 const { methods } = require('./lib/handlers');
 
+const matchingHandler = function(request, handler) {
+  return request.url.match(handler.path);
+};
+
 const processRequest = function(request, response) {
   const handlers = methods[request.method] || methods.NOT_ALLOWED;
-  const handler = handlers[request.url] || handlers.default;
-  return handler(request, response);
+  const matchingHandlers = handlers.filter(matchingHandler.bind(null, request));
+
+  const next = function() {
+    const router = matchingHandlers.shift();
+    router.handler(request, response, next);
+  };
+
+  next();
 };
 
 const main = function(port = 4000) {
