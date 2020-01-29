@@ -1,5 +1,11 @@
 const http = require('http');
-const { processRequest } = require('./app');
+const { methods } = require('./lib/handlers');
+
+const processRequest = function(request, comment) {
+  const handlers = methods[request.method] || methods.NOT_ALLOWED;
+  const handler = handlers[request.url] || handlers.default;
+  return handler(request, comment);
+};
 
 const handleRequest = function(request, response) {
   let comment = '';
