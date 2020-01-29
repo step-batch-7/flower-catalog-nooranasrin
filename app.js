@@ -42,47 +42,47 @@ const getDateAndTime = function(date) {
   return { day, time };
 };
 
-const createTable = function(feedbacks) {
+const createTable = function(comments) {
   let div = '';
-  feedbacks.forEach(feedback => {
+  comments.forEach(comment => {
     div += '<div class="feedback">';
-    div += `<div><b>Date: </b>${getDateAndTime(feedback.date).day} </div>`;
-    div += `<div><b>Time: </b>${getDateAndTime(feedback.date).time} </div>`;
-    div += `<div><b>Name: </b>${formatData(feedback.name)} </div>`;
-    div += `<div><b>Comment: </b>${formatData(feedback.comment)} </div>`;
+    div += `<div><b>Date: </b>${getDateAndTime(comment.date).day} </div>`;
+    div += `<div><b>Time: </b>${getDateAndTime(comment.date).time} </div>`;
+    div += `<div><b>Name: </b>${formatData(comment.name)} </div>`;
+    div += `<div><b>Comment: </b>${formatData(comment.comment)} </div>`;
     div += '</div>';
   });
   return div;
 };
 
-const generateFeedbackDetails = function(body) {
+const formatComment = function(body) {
   const { name, comment } = url.parse(`?${body}`, true).query;
-  const newFeedBack = { name, comment };
-  newFeedBack.date = new Date();
-  return newFeedBack;
+  const newComment = { name, comment };
+  newComment.date = new Date();
+  return newComment;
 };
 
 const loadPreviousFeedbacks = function() {
-  const dataStoragePath = `${__dirname}/feedback.json`;
+  const dataStoragePath = `${__dirname}/comments.json`;
   if (!fs.existsSync(dataStoragePath)) return [];
-  const feedback = require(dataStoragePath);
-  return feedback;
+  const comments = require(dataStoragePath);
+  return comments;
 };
 
 const storeTheFeedbacks = function(feedbacks) {
-  const dataStoragePath = `${__dirname}/feedback.json`;
+  const dataStoragePath = `${__dirname}/comments.json`;
   fs.writeFileSync(dataStoragePath, JSON.stringify(feedbacks));
 };
 
-const handleUserFeedback = function(method, body) {
-  let feedbacks = loadPreviousFeedbacks();
-  if (method === 'POST') feedbacks.unshift(generateFeedbackDetails(body));
-  storeTheFeedbacks(feedbacks);
-  return createTable(feedbacks);
+const handleUserComment = function(method, body) {
+  let comments = loadPreviousFeedbacks();
+  if (method === 'POST') comments.unshift(formatComment(body));
+  storeTheFeedbacks(comments);
+  return createTable(comments);
 };
 
 const serveGuestBook = function(request, comment) {
-  const tableHtml = handleUserFeedback(request.method, comment);
+  const tableHtml = handleUserComment(request.method, comment);
   let body = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
   body = body.replace('__FEEDBACK__', tableHtml);
   return { statusCode: 200, body, contentType: 'text/html' };
