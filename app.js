@@ -69,7 +69,7 @@ const loadPreviousFeedbacks = function() {
   return comments;
 };
 
-const serveGuestBook = function(request) {
+const serveGuestBook = function() {
   let comments = loadPreviousFeedbacks();
   const tableHtml = createTable(comments);
   let body = fs.readFileSync(`${__dirname}/templates/guestBook.html`, 'utf8');
@@ -82,7 +82,7 @@ const saveComments = function(request, comments) {
   totalComments.unshift(formatComment(comments));
   const dataStoragePath = `${__dirname}/comments.json`;
   fs.writeFileSync(dataStoragePath, JSON.stringify(totalComments));
-  return serveGuestBook(request);
+  return serveGuestBook();
 };
 
 const processRequest = function(request, comment) {
