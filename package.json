@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/step-batch-7/flower-catalog-nooranasrin/issues"
   },
-  "homepage": "https://github.com/step-batch-7/flower-catalog-nooranasrin#readme"
+  "homepage": "https://github.com/step-batch-7/flower-catalog-nooranasrin#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  }
 }
