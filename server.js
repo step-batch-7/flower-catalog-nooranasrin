@@ -7,17 +7,6 @@ const processRequest = function(request, response) {
   return handler(request, response);
 };
 
-// const handleRequest = function(request, response) {
-//   let comment = '';
-//   request.on('data', chunk => (comment += chunk));
-//   request.on('end', () => {
-//     const { contentType, statusCode, body } = processRequest(request, comment);
-//     response.setHeader('Content-Type', contentType);
-//     response.writeHead(statusCode);
-//     response.end(body);
-//   });
-// };
-
 const main = function(port = 4000) {
   const server = http.createServer(processRequest);
   server.on('error', err => console.error('server error', err));
