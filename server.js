@@ -6,7 +6,7 @@ const matchingHandler = function(request, handler) {
 };
 
 const processRequest = function(request, response) {
-  const handlers = methods[request.method] || methods.NOT_ALLOWED;
+  const handlers = methods[request.method];
   const matchingHandlers = handlers.filter(matchingHandler.bind(null, request));
 
   const next = function() {
