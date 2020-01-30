@@ -1,9 +1,10 @@
 const http = require('http');
 const { stdout, stderr } = process;
 const { app } = require('./lib/handlers');
-const PORT = process.argv[2] || 4000;
+const [, , port] = process.argv;
+const DEFAULT_PORT = 4000;
 
-const main = function(port) {
+const main = function(port = DEFAULT_PORT) {
   const server = http.createServer(app.processRequest.bind(app));
   server.on('error', err => stderr.write('server error', err));
   server.listen(port, () =>
@@ -11,4 +12,4 @@ const main = function(port) {
   );
 };
 
-main(PORT);
+main(port);
