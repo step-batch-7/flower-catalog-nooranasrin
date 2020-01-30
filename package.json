@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc mocha",
     "start": "node server.js 8000"
   },
   "repository": {
@@ -22,5 +22,9 @@
   "homepage": "https://github.com/step-batch-7/flower-catalog-nooranasrin#readme",
   "devDependencies": {
     "eslint": "^6.8.0"
+  },
+  "dependencies": {
+    "mocha": "^7.0.1",
+    "supertest": "^4.0.2"
   }
 }

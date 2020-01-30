@@ -79,11 +79,13 @@
   },
   "overrides": [
     {
-      "files": ["flowerCatalog.js"],
+      "files": ["flowerCatalog.js", "test*.js"],
       "rules": {
         "no-magic-numbers": "off",
         "no-unused-vars": "off",
-        "no-undef": "off"
+        "no-undef": "off",
+        "max-len": "off",
+        "handle-callback-err": "off"
       }
     }
   ]
