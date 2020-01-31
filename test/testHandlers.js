@@ -62,6 +62,15 @@ describe('GET method', () => {
       .expect('Content-Type', 'image/gif')
       .expect(200, done);
   });
+
+  it('should give the index.html page and should pass the data to the server when the url is /', done => {
+    request(app.processRequest.bind(app))
+      .get('/')
+      .send('name=flower')
+      .expect('Content-Type', 'text/html')
+      .expect(200, done)
+      .expect(/Flower Catalog/);
+  });
 });
 
 describe('Not Allowed Method', () => {
