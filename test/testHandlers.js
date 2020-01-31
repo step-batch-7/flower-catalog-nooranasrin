@@ -1,4 +1,6 @@
 const request = require('supertest');
+const sinon = require('sinon');
+const fs = require('fs');
 const { app } = require('../lib/handlers');
 
 describe('GET method', () => {
@@ -56,6 +58,14 @@ describe('GET method', () => {
       .expect(200, done);
   });
 
+  it('should give guestBook page when the request url is /guestBook.html', done => {
+    request(app.processRequest.bind(app))
+      .get('/guestBook.htmlhtml')
+      .expect('Content-Type', 'text/html')
+      .expect(/Oops!/)
+      .expect(404, done);
+  });
+
   it('should give the gif when the request url is /animated-flower-image-0021.gif', done => {
     request(app.processRequest.bind(app))
       .get('/images/animated-flower-image-0021.gif')
@@ -81,4 +91,18 @@ describe('Not Allowed Method', () => {
       .expect('Method Not Allowed')
       .expect(400, done);
   });
+});
+
+describe('POST method', () => {
+  before(() => sinon.replace(fs, 'writeFileSync', () => {}));
+
+  it('should be able to handle post request', done => {
+    request(app.processRequest.bind(app))
+      .post('/saveComments')
+      .send('name=nooraNasrin&comment=hai')
+      .expect('Location', 'guestBook.html')
+      .expect(301, done);
+  });
+
+  after(() => sinon.restore());
 });

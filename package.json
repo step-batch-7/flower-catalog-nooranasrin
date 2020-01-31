@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "mocha": "^7.0.1",
+    "sinon": "^8.1.1",
     "supertest": "^4.0.2"
   }
 }
