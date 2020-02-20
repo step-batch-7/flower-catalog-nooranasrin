@@ -2,7 +2,7 @@ const http = require('http');
 const { stdout, stderr } = process;
 const { app } = require('./lib/handlers');
 const [, , port] = process.argv;
-const DEFAULT_PORT = 4000;
+const DEFAULT_PORT = process.env.PORT || 4000;
 
 const main = function(port = DEFAULT_PORT) {
   const server = http.createServer((req, res) => app.processRequest(req, res));
