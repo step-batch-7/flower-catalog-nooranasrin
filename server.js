@@ -1,6 +1,6 @@
 const http = require('http');
 const { stdout, stderr } = process;
-const { app } = require('./lib/handlers');
+const { app } = require('./lib/routes');
 const port = process.env.PORT || 4000;
 
 const main = function(port) {
