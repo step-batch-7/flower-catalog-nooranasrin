@@ -50,7 +50,6 @@ describe('GET method', () => {
   it('should give guestBook page when the request url is /guestBook.html', done => {
     request(app)
       .get('/guestBook.html')
-      .expect('Content-Type', /text\/html/)
       .expect(/Leave A Comment/)
       .expect(200, done);
   });
@@ -85,6 +84,6 @@ describe('POST method', () => {
       .post('/saveComments')
       .send('name=nooraNasrin&comment=hai')
       .expect('Location', 'guestBook.html')
-      .expect(301, done);
+      .expect(302, done);
   });
 });
