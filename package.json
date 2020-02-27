@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "nyc mocha",
-    "start": "node server.js 8000"
+    "start": "~/redis-5.0.7/src/redis-server& node server.js"
   },
   "repository": {
     "type": "git",
