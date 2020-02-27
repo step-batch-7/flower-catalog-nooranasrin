@@ -2,3 +2,4 @@ node_modules
 feedback.json
 data/comments.json
 .nyc_output
+lib/.DS_Store
