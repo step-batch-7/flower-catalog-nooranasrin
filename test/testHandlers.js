@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { app } = require('../lib/routes');
+const CommentLog = require('../lib/commentLog');
 
 describe('GET method', () => {
   it('should give the index.html page when the url is /', done => {
@@ -48,13 +49,19 @@ describe('GET method', () => {
   });
 
   it('should give guestBook page when the request url is /guestBook.html', done => {
+    app.locals = {
+      client: { set: () => {} },
+      totalComments: CommentLog.load([
+        { name: 'anu', comment: 'nice', data: '2-01-2' }
+      ])
+    };
     request(app)
       .get('/guestBook.html')
       .expect(/Leave A Comment/)
       .expect(200, done);
   });
 
-  it('should give guestBook page when the request url is /guestBook.html', done => {
+  it('should give 404  when the request url is wrong', done => {
     request(app)
       .get('/guestBook.html.abcd')
       .expect('Content-Type', /text\/html/)
@@ -80,10 +87,16 @@ describe('GET method', () => {
 
 describe('POST method', () => {
   it('should be able to handle post request', done => {
+    app.locals = {
+      client: { set: () => {} },
+      totalComments: CommentLog.load([
+        { name: 'anu', comment: 'nice', data: '2-01-2' }
+      ])
+    };
     request(app)
       .post('/saveComments')
       .send('name=nooraNasrin&comment=hai')
-      .expect('Location', 'guestBook.html')
+      .expect('Location', '/guestBook.html')
       .expect(302, done);
   });
 });
